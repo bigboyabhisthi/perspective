@@ -22,6 +22,7 @@
 #include <type_traits>
 #include <date/date.h>
 #include <tsl/hopscotch_set.h>
+#include <re2/re2.h>
 
 namespace perspective {
 

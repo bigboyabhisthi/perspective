@@ -1377,3 +1377,16 @@ class TestViewExpression(object):
         assert result["computed5"] == ["abcdefghijklmnop", "def"]
         assert result["computed6"] == ["false", "true"]
         assert result["computed7"] == ["1234.57"] * 2
+
+    def test_view_string_match(self):
+        table = Table({
+            "a": ["abc", "ABC", "abc", "123", "AZDD", ""]
+        })
+        view = table.view(expressions=[
+            '// computed\nmatch("a", \'.*\')'
+        ])
+        assert view.expression_schema() == {
+            "computed": bool
+        }
+        results = view.to_columns()
+        assert results["computed"] == [True, True, True, True, True, False]
