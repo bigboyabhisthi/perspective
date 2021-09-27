@@ -1321,13 +1321,8 @@ module.exports = (perspective) => {
                 const view = await table.view({
                     expressions: [
                         'mor("u" and "u", "u" and "z", "z" and "z")',
-<<<<<<< HEAD
                         "mor(false, false, false)",
                         "mor(false, true, false)",
-=======
-                        "mor(False, False, False)",
-                        "mor(False, True, False)",
->>>>>>> fix inrange(), mor, mand, if statements
                     ],
                 });
                 const result = await view.to_columns();
@@ -1335,13 +1330,8 @@ module.exports = (perspective) => {
                     result['mor("u" and "u", "u" and "z", "z" and "z")']
                 ).toEqual([true, true, true, true]);
 
-<<<<<<< HEAD
                 // The boolean false is a false
                 expect(result["mor(false, false, false)"]).toEqual([
-=======
-                // The boolean False is a False
-                expect(result["mor(False, False, False)"]).toEqual([
->>>>>>> fix inrange(), mor, mand, if statements
                     false,
                     false,
                     false,

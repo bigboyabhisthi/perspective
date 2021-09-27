@@ -1574,7 +1574,10 @@ export default function (Module) {
      * // {'"Sales" + "Profit"': "float"}
      * console.log(results.expression_schema);
      *
-     * // {"invalid": "unknown token!", "1 + 'string'": "TypeError"}
+     * // {
+     * //   "invalid": {column: 0, line: 0, error_message: "unknown token!"},
+     * //   "1 + 'string'": {column: 0, line: 0, error_message: "Type Error"}
+     * // }
      * console.log(results.errors);
      */
     table.prototype.validate_expressions = function (
