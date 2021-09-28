@@ -50,11 +50,20 @@ impl Component for PivotItem {
             }
         });
 
+        let dragend = Callback::from({
+            let dragdrop = self.props.dragdrop.clone();
+            move |_event| {
+                web_sys::console::log_1(&"test".into());
+                dragdrop.drag_end()
+            }
+        });
+
         html! {
             <span
                 draggable="true"
                 ref={ noderef.clone() }
-                ondragstart={ dragstart }>
+                ondragstart={ dragstart }
+                ondragend={ dragend }>
                 {
                     self.props.column.clone()
                 }
@@ -74,7 +83,8 @@ impl Component for PivotItem {
     }
 
     fn change(&mut self, props: PivotItemProperties) -> bool {
+        let should_render = props.column != self.props.column;
         self.props = props;
-        true
+        should_render
     }
 }

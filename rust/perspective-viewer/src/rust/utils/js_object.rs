@@ -34,3 +34,12 @@ macro_rules! js_object {
         $o
     }};
 }
+
+#[macro_export]
+macro_rules! js_log {
+    ($x:expr $(, $y:expr)*) => {
+        const WARNING: &str = $x;
+        web_sys::console::log_1(&format!($x, $($y)*).into());
+    };
+}
+
