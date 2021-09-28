@@ -412,7 +412,8 @@ namespace computed_function {
 
     match::~match() {}
 
-    t_tscalar match::operator()(t_parameter_list parameters) {
+    t_tscalar
+    match::operator()(t_parameter_list parameters) {
         t_tscalar rval;
         rval.clear();
         rval.m_type = DTYPE_BOOL;
@@ -424,19 +425,17 @@ namespace computed_function {
         t_tscalar str = str_view();
         t_tscalar substr = substr_view();
 
-        if (
-            (str.get_dtype() != DTYPE_STR || str.m_status == STATUS_CLEAR) ||
-            (substr.get_dtype() != DTYPE_STR || substr.m_status == STATUS_CLEAR)) {
+        if ((str.get_dtype() != DTYPE_STR || str.m_status == STATUS_CLEAR)
+            || (substr.get_dtype() != DTYPE_STR
+                || substr.m_status == STATUS_CLEAR)) {
             rval.m_status = STATUS_CLEAR;
             return rval;
         }
 
-        if (!str.is_valid() || !substr.is_valid()) return rval;
+        if (!str.is_valid() || !substr.is_valid())
+            return rval;
 
-        boost::regex pattern(substr.to_string());
-        const std::string& search_string = str.to_string();
-
-        rval.set(boost::regex_match(search_string, pattern));
+        rval.set(t_regex::match(str.to_string(), substr.to_string()));
 
         return rval;
     }
@@ -446,7 +445,8 @@ namespace computed_function {
 
     find::~find() {}
 
-    t_tscalar find::operator()(t_parameter_list parameters) {
+    t_tscalar
+    find::operator()(t_parameter_list parameters) {
         t_tscalar rval;
         rval.clear();
         rval.m_type = DTYPE_BOOL;
@@ -460,22 +460,25 @@ namespace computed_function {
         t_tscalar search_str_scalar = _search_str();
 
         // Type check - only allow strings and input vector of size > 0
-        if (
-            (str_scalar.get_dtype() != DTYPE_STR || str_scalar.m_status == STATUS_CLEAR) ||
-            (search_str_scalar.get_dtype() != DTYPE_STR || search_str_scalar.m_status == STATUS_CLEAR) ||
-            output_vector.size() < 2) {
+        if ((str_scalar.get_dtype() != DTYPE_STR
+                || str_scalar.m_status == STATUS_CLEAR)
+            || (search_str_scalar.get_dtype() != DTYPE_STR
+                || search_str_scalar.m_status == STATUS_CLEAR)
+            || output_vector.size() < 2) {
             rval.m_status = STATUS_CLEAR;
             return rval;
         }
 
         // Inside actual execution, break if the value is null
-        if (!str_scalar.is_valid() || !search_str_scalar.is_valid()) return rval;
+        if (!str_scalar.is_valid() || !search_str_scalar.is_valid())
+            return rval;
 
         const std::string& str = str_scalar.to_string();
         boost::regex pattern(search_str_scalar.to_string());
         boost::match_results<std::string::const_iterator> results;
 
-        bool found = boost::regex_search(str, results, pattern, boost::match_default);
+        bool found
+            = boost::regex_search(str, results, pattern, boost::match_default);
 
         rval.set(found);
 
@@ -484,11 +487,12 @@ namespace computed_function {
             output_vector[1] = mknone();
             return rval;
         }
-        
+
         double start = static_cast<double>(results.position());
         double end = static_cast<double>(start + results.length() - 1);
 
-        if (end < 0) end = 0;
+        if (end < 0)
+            end = 0;
 
         output_vector[0] = mktscalar(start);
         output_vector[1] = mktscalar(end);
@@ -1140,7 +1144,7 @@ namespace computed_function {
         t_tscalar rval;
         rval.clear();
         rval.m_type = DTYPE_BOOL;
-        
+
         t_scalar_view _low(parameters[0]);
         t_scalar_view _val(parameters[1]);
         t_scalar_view _high(parameters[2]);
@@ -1162,7 +1166,7 @@ namespace computed_function {
         if (!low.is_valid() || !val.is_valid() || !high.is_valid()) {
             return rval;
         }
-        
+
         rval.set((low <= val) && (val <= high));
         return rval;
     }
@@ -1495,11 +1499,12 @@ namespace computed_function {
     }
 
     to_boolean::to_boolean()
-    : exprtk::igeneric_function<t_tscalar>("T") {}
+        : exprtk::igeneric_function<t_tscalar>("T") {}
 
     to_boolean::~to_boolean() {}
 
-    t_tscalar to_boolean::operator()(t_parameter_list parameters) {
+    t_tscalar
+    to_boolean::operator()(t_parameter_list parameters) {
         t_tscalar val;
         t_tscalar rval;
         rval.clear();

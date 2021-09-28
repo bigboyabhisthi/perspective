@@ -508,6 +508,7 @@ set (SOURCE_FILES
 	${PSP_CPP_SRC}/src/cpp/raii_impl_osx.cpp
 	${PSP_CPP_SRC}/src/cpp/raii_impl_win.cpp
 	${PSP_CPP_SRC}/src/cpp/range.cpp
+	${PSP_CPP_SRC}/src/cpp/regex.cpp
 	${PSP_CPP_SRC}/src/cpp/rlookup.cpp
 	${PSP_CPP_SRC}/src/cpp/scalar.cpp
 	${PSP_CPP_SRC}/src/cpp/schema_column.cpp

@@ -15,18 +15,17 @@ namespace perspective {
 // of brackets and sequences. ExprTk defaults will replace "true" and "false"
 // with 1 and 0, which we don't want. Using the tokens "true" and "false"
 // will raise a syntax error, which is the correct behavior.
-std::size_t
-t_computed_expression_parser::PARSER_COMPILE_OPTIONS = 
-    exprtk::parser<t_tscalar>::settings_t::e_joiner +
-    exprtk::parser<t_tscalar>::settings_t::e_numeric_check +
-    exprtk::parser<t_tscalar>::settings_t::e_bracket_check +
-    exprtk::parser<t_tscalar>::settings_t::e_sequence_check;
-    // exprtk::parser<t_tscalar>::settings_t::e_commutative_check;
-    // exprtk::parser<t_tscalar>::settings_t::e_strength_reduction;
+std::size_t t_computed_expression_parser::PARSER_COMPILE_OPTIONS
+    = exprtk::parser<t_tscalar>::settings_t::e_joiner
+    + exprtk::parser<t_tscalar>::settings_t::e_numeric_check
+    + exprtk::parser<t_tscalar>::settings_t::e_bracket_check
+    + exprtk::parser<t_tscalar>::settings_t::e_sequence_check;
+// exprtk::parser<t_tscalar>::settings_t::e_commutative_check;
+// exprtk::parser<t_tscalar>::settings_t::e_strength_reduction;
 
-std::shared_ptr<exprtk::parser<t_tscalar>>
-t_computed_expression_parser::PARSER = 
-    std::make_shared<exprtk::parser<t_tscalar>>(t_computed_expression_parser::PARSER_COMPILE_OPTIONS);
+std::shared_ptr<exprtk::parser<t_tscalar>> t_computed_expression_parser::PARSER
+    = std::make_shared<exprtk::parser<t_tscalar>>(
+        t_computed_expression_parser::PARSER_COMPILE_OPTIONS);
 
 // Exprtk functions without any state can be initialized statically
 computed_function::bucket t_computed_expression_parser::BUCKET_FN
@@ -106,11 +105,9 @@ computed_function::match t_computed_expression_parser::MATCH_FN
 computed_function::find t_computed_expression_parser::FIND_FN
     = computed_function::find();
 
-t_tscalar
-t_computed_expression_parser::TRUE_SCALAR = mktscalar(true);
+t_tscalar t_computed_expression_parser::TRUE_SCALAR = mktscalar(true);
 
-t_tscalar
-t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
+t_tscalar t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
 
 #define REGISTER_COMPUTE_FUNCTIONS(vocab)                                      \
     computed_function::day_of_week day_of_week_fn                              \
@@ -213,9 +210,9 @@ t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
     sym_table.add_function(                                                    \
         "datetime", t_computed_expression_parser::MAKE_DATETIME_FN);
 
-#define REGISTER_SCALAR_CONSTANTS()                                                         \
-    sym_table.add_constant("True", t_computed_expression_parser::TRUE_SCALAR);              \
-    sym_table.add_constant("False", t_computed_expression_parser::FALSE_SCALAR);            \
+#define REGISTER_SCALAR_CONSTANTS()                                            \
+    sym_table.add_constant("True", t_computed_expression_parser::TRUE_SCALAR); \
+    sym_table.add_constant("False", t_computed_expression_parser::FALSE_SCALAR);
 
 /******************************************************************************
  *
@@ -249,7 +246,7 @@ t_computed_expression::compute(std::shared_ptr<t_data_table> source_table,
 
     // Custom functions from computed_functions.cpp
     REGISTER_COMPUTE_FUNCTIONS(vocab)
-    
+
     exprtk::expression<t_tscalar> expr_definition;
     std::vector<std::pair<std::string, t_tscalar>> values;
     tsl::hopscotch_map<std::string, std::shared_ptr<t_column>> columns;

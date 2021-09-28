@@ -16,9 +16,9 @@
 #include <perspective/scalar.h>
 #include <perspective/column.h>
 #include <perspective/data_table.h>
+#include <perspective/regex.h>
 #include <perspective/exprtk.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/regex.hpp>
 #include <type_traits>
 #include <date/date.h>
 #include <tsl/hopscotch_set.h>
@@ -62,14 +62,14 @@ namespace computed_function {
 
     STRING_FUNCTION_HEADER(search)
 
-    // split(string, substring, output_vector) - writes results into output_vector
-    // which can be accessed in the expression, but not returned into the column.
-    // calling split() returns a boolean stating whether the operation succeeded.
+    // split(string, substring, output_vector) - writes results into
+    // output_vector which can be accessed in the expression, but not returned
+    // into the column. calling split() returns a boolean stating whether the
+    // operation succeeded.
     STRING_FUNCTION_HEADER(split)
 
     // substr(string, start_idx, end_idx)
     STRING_FUNCTION_HEADER(substr)
-
 
     /**
      * @brief Given a string column and 1...n string parameters, generate a
@@ -114,9 +114,9 @@ namespace computed_function {
      * @brief find(string, regex, vector) => True if any substring of string
      * matches regex, False otherwise. A vector of size 2 or greater MUST be
      * passed into the function in order to store the results.
-     * 
-     * Usage: 
-     * 
+     *
+     * Usage:
+     *
      * var x[2]; // vector to hold results
      * find("column", "abc", x) ? x[0] : null;
      */
@@ -258,7 +258,7 @@ namespace computed_function {
     /**
      * @brief Convert a column or scalar to a boolean, which returns True if the
      * value is truthy or False otherwise.
-     * 
+     *
      * boolean(1)
      * boolean(null)
      */

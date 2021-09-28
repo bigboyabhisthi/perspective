@@ -134,7 +134,7 @@ public:
     static computed_function::hour_of_day HOUR_OF_DAY_FN;
     static computed_function::day_of_week DAY_OF_WEEK_VALIDATOR_FN;
     static computed_function::month_of_year MONTH_OF_YEAR_VALIDATOR_FN;
-    
+
     // String functions
     static computed_function::intern INTERN_VALIDATOR_FN;
     static computed_function::concat CONCAT_VALIDATOR_FN;
