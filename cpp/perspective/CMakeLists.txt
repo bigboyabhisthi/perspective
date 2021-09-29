@@ -406,7 +406,6 @@ elseif(PSP_CPP_BUILD OR PSP_PYTHON_BUILD)
 endif()
 
 # Build header-only dependencies from external source
-psp_build_dep("re2" "${PSP_CMAKE_MODULE_PATH}/re2.txt.in")
 psp_build_dep("date" "${PSP_CMAKE_MODULE_PATH}/date.txt.in")
 psp_build_dep("hopscotch" "${PSP_CMAKE_MODULE_PATH}/hopscotch.txt.in")
 psp_build_dep("ordered-map" "${PSP_CMAKE_MODULE_PATH}/ordered-map.txt.in")
@@ -582,7 +581,6 @@ if (PSP_WASM_BUILD)
 	add_library(psp ${WASM_SOURCE_FILES})
 	target_compile_definitions(psp PRIVATE PSP_ENABLE_WASM=1)
 	set_target_properties(psp PROPERTIES COMPILE_FLAGS "")
-	target_link_libraries(psp re2)
 	target_link_libraries(psp arrow)
 
 	# "esm/erspective.cpp.js" from CMAKE_EXECUTABLE_SYNTAX
@@ -657,7 +655,6 @@ elseif(PSP_CPP_BUILD OR PSP_PYTHON_BUILD)
 		target_link_libraries(psp arrow)
 
 		target_link_libraries(psp tbb)
-		target_link_libraries(psp re2)
 		target_link_libraries(binding tbb)
 
 		target_link_libraries(binding psp)

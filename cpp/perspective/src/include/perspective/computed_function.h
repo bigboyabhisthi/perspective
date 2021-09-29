@@ -22,9 +22,10 @@
 #include <type_traits>
 #include <date/date.h>
 #include <tsl/hopscotch_set.h>
-#include <re2/re2.h>
 
 namespace perspective {
+
+typedef tsl::hopscotch_map<std::string, std::shared_ptr<boost::regex>> t_regex_pattern_map;
 
 namespace computed_function {
 
@@ -35,6 +36,24 @@ namespace computed_function {
     typedef typename t_generic_type::scalar_view t_scalar_view;
     typedef typename t_generic_type::vector_view t_vector_view;
     typedef typename t_generic_type::string_view t_string_view;
+
+
+// A function that uses `t_regex_pattern_map` to cache repeated invocations
+// of boost::regex over a column. The `t_regex_pattern_map` is passed in
+// from the `t_computed_expression` object, so each expression that is created
+// has its own map. In benchmarks, this leads to a sustained 40-50% improvement
+// in the performance of regex functions as the map is initialized and the
+// boost::regex object cached inside the first call to compute(), and all
+// subsequent calls will use the cached object instead of initializing a new
+// boost::regex.
+#define REGEX_FUNCTION_HEADER(NAME)                                            \
+    struct NAME : public exprtk::igeneric_function<t_tscalar> {                \
+        NAME(std::shared_ptr<t_regex_pattern_map> pattern_map);                \
+        ~NAME();                                                               \
+        t_tscalar operator()(t_parameter_list parameters);                     \
+        std::shared_ptr<t_regex_pattern_map> m_pattern_map;                    \
+    };
+
 
 #define STRING_FUNCTION_HEADER(NAME)                                           \
     struct NAME : public exprtk::igeneric_function<t_tscalar> {                \
@@ -109,7 +128,7 @@ namespace computed_function {
      * matches regex, and False otherwise. Does not need a vocab as it
      * does not write a string to the output column.
      */
-    FUNCTION_HEADER(match)
+    REGEX_FUNCTION_HEADER(match)
 
     /**
      * @brief find(string, regex, vector) => True if any substring of string

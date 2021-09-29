@@ -99,8 +99,8 @@ computed_function::to_string
     t_computed_expression_parser::TO_STRING_VALIDATOR_FN
     = computed_function::to_string(nullptr);
 
-computed_function::match t_computed_expression_parser::MATCH_FN
-    = computed_function::match();
+computed_function::match t_computed_expression_parser::MATCH_VALIDATOR_FN
+    = computed_function::match(nullptr);
 
 computed_function::find t_computed_expression_parser::FIND_FN
     = computed_function::find();
@@ -109,7 +109,7 @@ t_tscalar t_computed_expression_parser::TRUE_SCALAR = mktscalar(true);
 
 t_tscalar t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
 
-#define REGISTER_COMPUTE_FUNCTIONS(vocab)                                      \
+#define REGISTER_COMPUTE_FUNCTIONS(vocab, pattern_map)                         \
     computed_function::day_of_week day_of_week_fn                              \
         = computed_function::day_of_week(vocab);                               \
     computed_function::month_of_year month_of_year_fn                          \
@@ -122,6 +122,8 @@ t_tscalar t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
     computed_function::length length_fn = computed_function::length(vocab);    \
     computed_function::to_string to_string_fn                                  \
         = computed_function::to_string(vocab);                                 \
+    computed_function::match match_fn                                          \
+        = computed_function::match(pattern_map);                               \
     sym_table.add_function("today", computed_function::today);                 \
     sym_table.add_function("now", computed_function::now);                     \
     sym_table.add_function("bucket", t_computed_expression_parser::BUCKET_FN); \
@@ -135,7 +137,7 @@ t_tscalar t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
     sym_table.add_function("upper", upper_fn);                                 \
     sym_table.add_function("lower", lower_fn);                                 \
     sym_table.add_function("length", length_fn);                               \
-    sym_table.add_function("match", t_computed_expression_parser::MATCH_FN);   \
+    sym_table.add_function("match", match_fn);                                 \
     sym_table.add_function("find", t_computed_expression_parser::FIND_FN);     \
     sym_table.add_function("string", to_string_fn);                            \
     sym_table.add_reserved_function(                                           \
@@ -183,7 +185,8 @@ t_tscalar t_computed_expression_parser::FALSE_SCALAR = mktscalar(false);
         "lower", t_computed_expression_parser::LOWER_VALIDATOR_FN);            \
     sym_table.add_function(                                                    \
         "length", t_computed_expression_parser::LENGTH_VALIDATOR_FN);          \
-    sym_table.add_function("match", t_computed_expression_parser::MATCH_FN);   \
+    sym_table.add_function("match",                                            \
+        t_computed_expression_parser::MATCH_VALIDATOR_FN);                     \
     sym_table.add_function("find", t_computed_expression_parser::FIND_FN);     \
     sym_table.add_reserved_function(                                           \
         "inrange", t_computed_expression_parser::INRANGE_FN);                  \
@@ -229,6 +232,7 @@ t_computed_expression::t_computed_expression(
     , m_parsed_expression_string(parsed_expression_string)
     , m_column_ids(std::move(column_ids))
     , m_expression_vocab(nullptr)
+    , m_regex_pattern_map(std::make_shared<t_regex_pattern_map>())
     , m_dtype(dtype) {}
 
 void
@@ -245,7 +249,7 @@ t_computed_expression::compute(std::shared_ptr<t_data_table> source_table,
     REGISTER_SCALAR_CONSTANTS()
 
     // Custom functions from computed_functions.cpp
-    REGISTER_COMPUTE_FUNCTIONS(vocab)
+    REGISTER_COMPUTE_FUNCTIONS(vocab, m_regex_pattern_map)
 
     exprtk::expression<t_tscalar> expr_definition;
     std::vector<std::pair<std::string, t_tscalar>> values;

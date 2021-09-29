@@ -67,6 +67,7 @@ private:
     std::string m_parsed_expression_string;
     std::vector<std::pair<std::string, std::string>> m_column_ids;
     std::shared_ptr<t_vocab> m_expression_vocab;
+    std::shared_ptr<t_regex_pattern_map> m_regex_pattern_map;
     t_dtype m_dtype;
 };
 
@@ -142,7 +143,7 @@ public:
     static computed_function::upper UPPER_VALIDATOR_FN;
     static computed_function::lower LOWER_VALIDATOR_FN;
     static computed_function::length LENGTH_VALIDATOR_FN;
-    static computed_function::match MATCH_FN;
+    static computed_function::match MATCH_VALIDATOR_FN;
     static computed_function::find FIND_FN;
 
     // Numeric functions

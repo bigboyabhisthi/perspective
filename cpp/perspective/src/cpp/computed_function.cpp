@@ -407,8 +407,9 @@ namespace computed_function {
         return rval;
     }
 
-    match::match()
-        : exprtk::igeneric_function<t_tscalar>("TT") {}
+    match::match(std::shared_ptr<t_regex_pattern_map> pattern_map)
+        : exprtk::igeneric_function<t_tscalar>("TT")
+        , m_pattern_map(pattern_map) {}
 
     match::~match() {}
 
@@ -420,22 +421,33 @@ namespace computed_function {
 
         // Parameters already validated
         t_scalar_view str_view(parameters[0]);
-        t_scalar_view substr_view(parameters[1]);
+        t_scalar_view pattern_view(parameters[1]);
 
         t_tscalar str = str_view();
-        t_tscalar substr = substr_view();
+        t_tscalar pattern = pattern_view();
 
+        // Type-check: only operate on strings
         if ((str.get_dtype() != DTYPE_STR || str.m_status == STATUS_CLEAR)
-            || (substr.get_dtype() != DTYPE_STR
-                || substr.m_status == STATUS_CLEAR)) {
+            || (pattern.get_dtype() != DTYPE_STR
+                || pattern.m_status == STATUS_CLEAR)) {
             rval.m_status = STATUS_CLEAR;
             return rval;
         }
 
-        if (!str.is_valid() || !substr.is_valid())
+        // Validity check OR exit early if pattern map is none, as that
+        // indicates that we're in type check mode.
+        if (!str.is_valid() || !pattern.is_valid() || m_pattern_map == nullptr)
             return rval;
 
-        rval.set(t_regex::match(str.to_string(), substr.to_string()));
+        const std::string& match_string = str.to_string();
+        const std::string& match_pattern = pattern.to_string();
+
+        if (m_pattern_map->count(match_pattern) == 0) {
+            m_pattern_map->insert({match_pattern, std::make_shared<boost::regex>(match_pattern)});
+        }
+
+        bool match_result = t_regex::match(match_string, m_pattern_map->operator[](match_pattern)); 
+        rval.set(match_result);
 
         return rval;
     }

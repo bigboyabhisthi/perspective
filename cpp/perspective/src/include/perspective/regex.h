@@ -15,7 +15,6 @@
 #include <perspective/raw_types.h>
 #include <perspective/scalar.h>
 #include <boost/regex.hpp>
-#include <re2/re2.h>
 #include <chrono>
 
 #ifdef PSP_ENABLE_WASM
