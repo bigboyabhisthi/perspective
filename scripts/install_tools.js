@@ -16,7 +16,7 @@ try {
         execute`tar xfz boost_1_71_0.tar.gz`;
         process.chdir("boost_1_71_0");
         execute`./bootstrap.sh`;
-        execute`./b2 -j8 --with-program_options --with-filesystem --with-system install `;
+        execute`./b2 -j8 --with-program_options --with-filesystem --with-regex --with-system link=static install`;
 
         console.log("-- Installing Flatbuffers");
         execute`mkdir -p /usr/local`;
