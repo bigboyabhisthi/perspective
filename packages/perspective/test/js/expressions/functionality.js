@@ -2638,6 +2638,7 @@ module.exports = (perspective) => {
                     'max(100, "a")', // valid
                 ];
                 const results = await table.validate_expressions(expressions);
+
                 expect(results.expression_schema).toEqual({
                     '"a" + "d"': "float",
                     '"c"': "string",
@@ -2646,6 +2647,7 @@ module.exports = (perspective) => {
                     'max(100, "a")': "float",
                     "concat(\"c\", ' ', \"c\", 'abc')": "string",
                 });
+
                 table.delete();
             });
 

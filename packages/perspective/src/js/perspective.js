@@ -1587,6 +1587,10 @@ export default function (Module) {
             errors: {},
         };
 
+        // A mapping of all expression aliases to expression strings for both
+        // valid and invalid expressions.
+        const expression_alias_map = {};
+
         if (!expressions || expressions.length === 0) return validated;
         expressions = parse_expression_strings(expressions);
 
@@ -1600,7 +1604,6 @@ export default function (Module) {
                 inner.push_back(val);
             }
             vector.push_back(inner);
-            validated.expression_alias[expression[0]] = expression[1];
         }
 
         const validation_results = __MODULE__.validate_expressions(
@@ -1621,6 +1624,9 @@ export default function (Module) {
             }
 
             validated.expression_schema[alias] = dtype;
+
+            // Only add valid expressions to output expression alias map
+            validated.expression_alias[alias] = expression_alias_map[alias];
         }
 
         const error_aliases = expression_errors.keys();
